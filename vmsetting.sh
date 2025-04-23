@@ -22,6 +22,20 @@ fi
 source "$UTILS_PATH"
 # Oracle VM VirtualBox 자동 설정 스크립트
 
+echo "insert vm base path(may be you want quick start insert y | path ) "
+read -r PATH_MODE
+if [ "$PATH_MODE" = "y" ]; then
+    echo "make directoty alpineServer"
+    mkdir -p $(pwd)/alpineServer
+    VM_BASE_PATH="$(pwd)/alpineServer"
+    echo "quick mode base path: $(pwd)/alpineServer"
+else
+    echo "insert vm base path(style is /home/"$USER"/...): "
+    read -r VM_BASE_PATH
+fi
+
+cd "$VM_BASE_PATH"
+
 # 설정 변수
 
 curl --remote-name https://dl-cdn.alpinelinux.org/alpine/v3.21/releases/x86_64/alpine-standard-3.21.3-x86_64.iso
@@ -62,8 +76,6 @@ else
 fi
 
 
-# 경로설정은 아직 구체적으로 바꿀 의향 없음
-VM_BASE_PATH="/home/$USER/goinfre/inception_d"
 
 # VM 생성
 VBoxManage createvm --name "$VM_NAME" --ostype "$OS_TYPE" --basefolder "$VM_BASE_PATH" --register

@@ -1,0 +1,26 @@
+#!/bin/bash
+
+mkdir secret
+chmod 700 secret
+# Create a new file in the secret directory
+
+<<eof | > secret/db_password.txt
+a123456789
+eof
+
+<<eof | > secret/db_root_password.txt
+roota123456789
+eof
+
+# Create a new environment variable file
+Readfile(){
+    local file="$1"
+    cat "$file"
+}
+
+# Read the contents of the file into a variable
+<<eof | > .env
+MARIADB_ROOT_PASSWORD=$(Readfile secret/db_root_password.txt)
+MARIADB_MYSQL_LOCALHOST_USER=wordpress
+MARIADB_PASSWORD=$(Readfile secret/db_password.txt)
+eof

@@ -1,0 +1,48 @@
+#!/bin/sh
+
+mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.bak
+
+cat > /etc/nginx/nginx.conf <<eof
+
+user  nginx;
+
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    server {
+        listen       80;
+        root           ${NGINX_ROOT_PATH};
+        index index.php;
+
+        port_in_redirect off;
+        server_name_in_redirect off;
+
+        location / {
+            try_files \$uri \$uri/ /index.php?\$args;
+        }
+
+        location ~ \.php$ {
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            fastcgi_pass  ${WORDPRESS_HOST};
+            fastcgi_index index.php;
+            include       fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME   \$document_root\$fastcgi_script_name;
+            fastcgi_param PATH_INFO \$fastcgi_path_info;
+            fastcgi_param HTTP_HOST \$http_host;
+        }
+    }
+
+}
+
+eof
+
+cat /etc/nginx/nginx.conf
+
+chown -R nginx:nginx /var/lib/nginx
+chmod 755 /var/lib/nginx
+
+exec nginx -g 'daemon off;'

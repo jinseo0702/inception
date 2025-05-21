@@ -1,5 +1,6 @@
 **/secrets/
 **/wordpressvol/
 **/dbvol/
-**/*.swap*/
-**/.env/
+**/*.swap
+**/.env
+**/*.swp

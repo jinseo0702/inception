@@ -1,0 +1,47 @@
+#!/bin/sh
+
+PATHENV=/home/inception/srcs
+PATHREQUIREMENTS=/home/inception/srcs/requirements
+PATHVOLUMES=/home/login/data
+PATHSECRET=/home/inception/secrets
+
+if [ ! -e ${PATHSECRET}/db_password.txt ]; then
+echo "Hello Secret"
+mkdir -p ${PATHSECRET}
+
+cat  > ${PATHSECRET}/db_password.txt <<eof
+a123456789
+eof
+
+cat > ${PATHSECRET}/db_root_password.txt <<eof
+roota123456789
+eof
+
+else
+	echo "is in there"
+fi
+
+
+
+if [ ! -e ${PATHENV}/.env ]; then
+echo "Hello env"
+cat > ${PATHENV}/.env <<eof
+MARIADB_MYSQL_LOCALHOST_USER=wordpress
+MARIADB_DATABASE=wordpress
+DB_HOST=db
+WORDPRESS_SUPER_USER=superuser
+WORDPRESS_SUPER_USER_EMAIL=superuser@wordpress.co.kr
+WORDPRESS_USER=normaluser
+WORDPRESS_USER_EMAIL=user@wordpress.co.kr
+WORDPRESS_HOST=wordpress:9000
+WORDPRESS_HOST_NAME=wordpress
+DNS=jinseo.42.fr
+DNS2=www.jinseo.42.fr
+NGINX_ROOT_PATH=/var/www/html/wordpress
+PATHREQUIREMENTS=${PATHREQUIREMENTS}
+PATHVOLUMES=${PATHVOLUMES}
+PATHSECRET=${PATHSECRET}
+eof
+else
+	echo "Hello env"
+fi

@@ -1,0 +1,50 @@
+services:
+  db:
+    container_name: db
+    build: ${PATHREQUIREMENTS}/mariadb/.
+    networks:
+      - test
+    env_file:
+      - .env
+    secrets:
+      - db_root_password
+      - db_password
+    volumes:
+      - ${PATHVOLUMES}/dbvol:/var/lib/mysql
+    restart: always
+  wordpress:
+    container_name: wordpress
+    build: ${PATHREQUIREMENTS}/wordpress/.
+    networks:
+      - test
+    env_file:
+      - .env
+    secrets:
+      - db_password
+    volumes:
+      - ${PATHVOLUMES}/wordpressvol:/var/www/html/wordpress
+    depends_on:
+      - db
+    restart: always
+  web:
+    container_name: web
+    build: ${PATHREQUIREMENTS}/nginx/.
+    networks:
+      - test
+    ports:
+      - "443:443"
+    env_file:
+      - .env
+    depends_on:
+      - wordpress
+    restart: always
+
+networks:
+  test:
+    driver: bridge
+
+secrets:
+  db_root_password:
+    file: ${PATHSECRET}/db_root_password.txt
+  db_password:
+    file: ${PATHSECRET}/db_password.txt
